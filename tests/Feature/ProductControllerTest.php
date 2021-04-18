@@ -3,7 +3,9 @@
 namespace Tests\Feature;
 
 use App\Models\Product;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Laravel\Sanctum\Sanctum;
 use Tests\TestCase;
 
 class ProductControllerTest extends TestCase
@@ -13,6 +15,8 @@ class ProductControllerTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
+
+        Sanctum::actingAs(User::factory()->create());
     }
 
     public function test_index()
@@ -22,7 +26,7 @@ class ProductControllerTest extends TestCase
         $response = $this->getJson('/api/products');
 
         $response->assertSuccessful();
-//        $response->assertHeader('content-type', 'application/json');
+        $response->assertHeader('content-type', 'application/json');
         $response->assertJsonCount(5);
     }
 
@@ -35,7 +39,7 @@ class ProductControllerTest extends TestCase
         $response = $this->postJson('/api/products', $data);
 
         $response->assertSuccessful();
-//        $response->assertHeader('content-type', 'application/json');
+        $response->assertHeader('content-type', 'application/json');
         $this->assertDatabaseHas('products', $data);
     }
 
@@ -51,7 +55,7 @@ class ProductControllerTest extends TestCase
 
         $response = $this->patchJson("/api/products/{$product->getKey()}", $data);
         $response->assertSuccessful();
-//        $response->assertHeader('content-type', 'application/json');
+        $response->assertHeader('content-type', 'application/json');
     }
 
     public function test_show_product()
@@ -62,7 +66,7 @@ class ProductControllerTest extends TestCase
         $response = $this->getJson("/api/products/{$product->getKey()}");
 
         $response->assertSuccessful();
-//        $response->assertHeader('content-type', 'application/json');
+        $response->assertHeader('content-type', 'application/json');
     }
 
     public function test_delete_product()
@@ -73,7 +77,7 @@ class ProductControllerTest extends TestCase
         $response = $this->deleteJson("/api/products/{$product->getKey()}");
 
         $response->assertSuccessful();
-//        $response->assertHeader('content-type', 'application/json');
+        $response->assertHeader('content-type', 'application/json');
         $this->assertDeleted($product);
     }
 
