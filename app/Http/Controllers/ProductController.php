@@ -2,6 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreProductRequest;
+use App\Http\Requests\UpdateProductRequest;
+use App\Http\Resources\ProductCollectionResource;
+use App\Http\Resources\ProductResource;
 use App\Models\Product;
 use Illuminate\Http\Request;
 
@@ -14,18 +18,18 @@ class ProductController extends Controller
      */
     public function index()
     {
-        return Product::all();
+        return new ProductCollectionResource(Product::all());
     }
 
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Http\Requests\StoreProductRequest  $storeProductRequest
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(StoreProductRequest $storeProductRequest)
     {
-        $product = Product::create($request->all());
+        $product = Product::create($storeProductRequest->all());
 
         return $product;
     }
@@ -38,19 +42,21 @@ class ProductController extends Controller
      */
     public function show(Product $product)
     {
+        $product = new ProductResource($product);
+
         return $product;
     }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Http\Requests\UpdateProductRequest  $updateProductRequest
      * @param  \App\Models\Product  $product
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Product $product)
+    public function update(UpdateProductRequest $updateProductRequest, Product $product)
     {
-        $product->update($request->all());
+        $product->update($updateProductRequest->all());
 
         return $product;
     }
