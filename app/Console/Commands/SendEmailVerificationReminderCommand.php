@@ -3,10 +3,10 @@
 namespace App\Console\Commands;
 
 use App\Models\User;
-use App\Notifications\VerifyYourEmailNotification;
+use App\Notifications\VerificationReminderNotification;
 use Illuminate\Console\Command;
 
-class SendVerifyYourEmailNotificationCommand extends Command
+class SendEmailVerificationReminderCommand extends Command
 {
     /**
      * The name and signature of the console command.
@@ -56,7 +56,7 @@ class SendVerifyYourEmailNotificationCommand extends Command
             $this->output->progressStart();
 
             $builder->each(function (User $user) {
-                   $user->notify(new VerifyYourEmailNotification());
+                   $user->notify(new VerificationReminderNotification());
                    $this->output->progressAdvance();
                 });
 

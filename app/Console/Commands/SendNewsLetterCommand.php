@@ -13,14 +13,16 @@ class SendNewsLetterCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'send:newsletter {emails?*}';
+    protected $signature = 'send:newsletter
+                            {emails?*}
+                            {--s|schedule : Si debe ser ejecutado directamente o no}';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Envía un correo electrónico';
+    protected $description = 'Envia un correo electronico a todos los usuarios que hayan verificado su cuenta';
 
     /**
      * Create a new command instance.
@@ -40,6 +42,7 @@ class SendNewsLetterCommand extends Command
     public function handle()
     {
         $emails = $this->argument('emails');
+        $schedule = $this->option('schedule');
 
         $builder = User::query();
 
@@ -51,15 +54,20 @@ class SendNewsLetterCommand extends Command
         $count = $builder->count();
 
         if ($count) {
-            $this->output->progressStart($count);
+            $this->info("\nSe enviaran {$count} correos");
 
-            $builder->each(function (User $user) {
+            if ($this->confirm('¿Estás de acuerdo?') || $schedule) {
+                $this->output->progressStart($count);
+
+                $builder->each(function (User $user) {
                     $user->notify(new NewsletterNotification());
                     $this->output->progressAdvance();
                 });
 
-            $this->info("\nSe enviaron {$count} correos");
-            $this->output->progressFinish();
+                $this->output->progressFinish();
+                $this->info("\nCorreos enviados");
+                return;
+            }
         }
 
         $this->info('No se envió nungún correo');
