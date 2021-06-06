@@ -20,7 +20,11 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 
 Route::apiResource('products', \App\Http\Controllers\ProductController::class)->middleware('auth:sanctum');
 Route::apiResource('categories', \App\Http\Controllers\CategoryController::class)->middleware('auth:sanctum');
-
 Route::post('sanctum/token', \App\Http\Controllers\UserTokenController::class);
 
-Route::post('/newsletter', [\App\Http\Controllers\NewsletterController::class, 'send']);
+Route::middleware(['auth:sanctum'])->group(function () {
+    Route::post('/newsletter', [\App\Http\Controllers\NewsletterController::class, 'send']);
+    Route::post("products/{product}/rate", [\App\Http\Controllers\ProductRatingController::class, 'rate']);
+    Route::post("products/{product}/unrate", [\App\Http\Controllers\ProductRatingController::class, 'unrate']);
+});
+
