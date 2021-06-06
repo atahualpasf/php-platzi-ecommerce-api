@@ -25,7 +25,7 @@ class ProductRatingController extends Controller
     public function unrate(Product $product, Request $request)
     {
         /** @var User $user */
-        $user = $request->useer();
+        $user = $request->user();
         $user->unrate($product);
 
         return new ProductResource($product);
