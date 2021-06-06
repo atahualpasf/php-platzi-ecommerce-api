@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Events\ProductCreating;
 use App\Utils\CanBeRated;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -12,6 +13,10 @@ class Product extends Model
 
     protected $guarded = [];
 
+    protected $dispatchesEvents = [
+        'creating' => ProductCreating::class
+    ];
+
     public function category() {
         return $this->belongsTo(Category::class);
     }
@@ -19,4 +24,13 @@ class Product extends Model
     public function createdBy() {
         return $this->belongsTo(User::class, 'created_by');
     }
+
+    /*protected static function booted()
+    {
+        static::creating(function (Product $product) {
+            $faker = \Faker\Factory::create();
+            $product->image_url = $faker->imageUrl();
+            $product->createdBy()->associate(auth()->user());
+        });
+    }*/
 }
